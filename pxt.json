@@ -2,18 +2,23 @@
     "name": "template arcade project-name",
     "description": "",
     "dependencies": {
-        "device": "*"
+        "device": "*",
+        "animation": "*"
     },
     "files": [
         "main.ts",
         "README.md",
-        "assets.json"
+        "assets.json",
+        "sprites.ts",
+        "images.ts",
+        "tilemap.g.jres",
+        "tilemap.g.ts"
     ],
     "testFiles": [
         "test.ts"
     ],
     "targetVersions": {
-        "target": "1.4.28",
+        "target": "1.4.30",
         "targetId": "arcade"
     },
     "supportedTargets": [
