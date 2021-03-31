@@ -12,7 +12,8 @@
         "sprites.ts",
         "images.ts",
         "tilemap.g.jres",
-        "tilemap.g.ts"
+        "tilemap.g.ts",
+        "templates.ts"
     ],
     "testFiles": [
         "test.ts"

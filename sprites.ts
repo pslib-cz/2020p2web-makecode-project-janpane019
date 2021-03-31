@@ -1,51 +1,158 @@
 class AnimatedSprite extends Sprite {
-    facingRight: boolean;
-    framesR: Image[];
-    framesL: Image[];
-
+    facing_right: boolean = false;
+    frames_R: Image[];
+    frames_L: Image[];
+    is_playing_animation: boolean;
     UpdateSprite() : void{
 
     }
 
     RenderSprite() : void{
-        if(this.vx > 0 && !this.facingRight)
+        if(!this.is_playing_animation)
         {
-            animation.runImageAnimation(this, this.framesR,180,true);
-            this.facingRight = true;
-        }
-        else if (this.vx < 0 && this.facingRight)
-        {
-            animation.runImageAnimation(this, this.framesL,180,true);
-            this.facingRight = false;
+            if(this.vx > 0 && !this.facing_right)
+            {
+                animation.runImageAnimation(this, this.frames_R,180,true);
+                this.facing_right = true;
+            }
+            else if (this.vx < 0 && this.facing_right)
+            {
+                animation.runImageAnimation(this, this.frames_L,180,true);
+                this.facing_right = false;
+            }
         }
     }
 
-    SetFrames(framesL : Image[], framesR : Image[]){
-        this.framesR = framesR;
-        this.framesL = framesL;
-        if(this.facingRight){
-            animation.runImageAnimation(this, this.framesR,180,true);
+    PlayAnimation(frames: Image[], frame_interval: number){
+        animation.runImageAnimation(this, frames,frame_interval,false);
+        this.is_playing_animation = true;
+        setTimeout(function() {
+            this.is_playing_animation = false;
+            if(this.facing_right)
+            {
+                animation.runImageAnimation(this, this.frames_R,180,true);
+            }
+            else
+            {
+                animation.runImageAnimation(this, this.frames_L,180,true);
+            }
+        }, frames.length*frame_interval)
+    }
+
+    constructor(img: Image, frames_L : Image[], frames_R : Image[]){
+        super(img);
+        this.frames_R = frames_R;
+        this.frames_L = frames_L;
+        if(this.facing_right){
+            animation.runImageAnimation(this, this.frames_R,180,true);
         }
         else{
-            animation.runImageAnimation(this, this.framesL,180,true);
+            animation.runImageAnimation(this, this.frames_L,180,true);
+        }
+    }
+}
+
+// General class used for food animals 
+class AnimalSprite extends AnimatedSprite {
+    horizontal_speed : number;
+    vertical_speed : number;
+    
+    last_direction_change: number;  // Last time the sprite has changed its direction 
+    direction_change_interval: number = 2500;
+
+
+    UpdateSprite() : void{
+        super.UpdateSprite();
+        
+        // Set random direction
+        if(game.runtime() - this.last_direction_change > this.direction_change_interval)
+        {
+            let x_direction = randint(-1, 1);
+            let y_direction = randint(-1, 1);
+
+            this.vx = this.horizontal_speed * x_direction; 
+            this.vy = this.vertical_speed * y_direction;
+
+            this.last_direction_change = game.runtime();
         }
     }
 
-    constructor(img: Image, facingRight: boolean = false){
-        super(img);
-        this.facingRight = facingRight;
+    RenderSprite() : void{
+        super.RenderSprite();
+    }
+
+    static CreateAnimalSprite(img: Image, frames_L : Image[], frames_R : Image[], horizontal_speed : number = 15, vertical_speed: number = 10 ): AnimalSprite {
+        const scene = game.currentScene();
+        const sprite = new AnimalSprite(img, frames_L, frames_R,horizontal_speed,vertical_speed);
+        let kind = SpriteKind.Food;
+        sprite.setKind(kind);
+        scene.physicsEngine.addSprite(sprite);
+
+        scene.createdHandlers
+            .filter(h => h.kind == kind)
+            .forEach(h => h.handler(sprite));
+
+        return sprite
+    }   
+
+    constructor(img: Image, frames_L : Image[], frames_R : Image[], horizontal_speed: number = 15, vertical_speed: number = 10){
+        super(img,frames_L,frames_R);
+
+        this.horizontal_speed = horizontal_speed;
+        this.vertical_speed = vertical_speed;
+
+        this.last_direction_change = this.direction_change_interval *-1;
     }
 }
 
-function createAnimatedSprite(img: Image, kind?: number): AnimatedSprite {
-    const scene = game.currentScene();
-    const sprite = new AnimatedSprite(img)
-    sprite.setKind(kind);
-    scene.physicsEngine.addSprite(sprite);
+class PlayerSprite extends AnimatedSprite {
+    attack_frames_L : Image[];
+    attack_frames_R : Image[];
 
-    scene.createdHandlers
-        .filter(h => h.kind == kind)
-        .forEach(h => h.handler(sprite));
+    UpdateSprite() : void{
+        super.UpdateSprite();
+    }
 
-    return sprite
+    RenderSprite() : void{
+        super.RenderSprite();
+    }
+
+    Attack() : void{
+        if(this.facing_right){
+            this.PlayAnimation(this.attack_frames_R,50);
+        }
+        else{
+            this.PlayAnimation(this.attack_frames_L,50);
+        }
+    }
+
+    static CreatePlayerSprite(img: Image, frames_L : Image[], frames_R : Image[], attack_frames_L : Image[], attack_frames_R : Image[]): PlayerSprite {
+        const scene = game.currentScene();
+        const sprite = new PlayerSprite(img, frames_L, frames_R, attack_frames_L, attack_frames_R);
+        let kind = SpriteKind.Player;
+        sprite.setKind(kind);
+        scene.physicsEngine.addSprite(sprite);
+
+        scene.createdHandlers
+            .filter(h => h.kind == kind)
+            .forEach(h => h.handler(sprite));
+
+        return sprite
+    }   
+
+    constructor(img: Image, frames_L : Image[], frames_R : Image[], attack_frames_L : Image[], attack_frames_R : Image[]){
+        super(img,frames_L,frames_R);
+        this.attack_frames_L = attack_frames_L;
+        this.attack_frames_R = attack_frames_R;
+    }
 }
+
+
+
+function createRandomAnimalSprite(): AnimalSprite {
+    const scene = game.currentScene();
+    let keys = Object.keys(animals_images);
+    let animal = animals_images[keys[randint(0,keys.length-1)]];
+    const sprite = AnimalSprite.CreateAnimalSprite(animal.image, animal.frames_L, animal.frames_R);
+    return sprite;
+} 

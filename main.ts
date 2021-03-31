@@ -2,8 +2,7 @@
 let food_sprites:AnimatedSprite[] = [];
 
 // Player - Appearance
-let shark = createAnimatedSprite(sharkImg,SpriteKind.Player);
-shark.SetFrames(sharkFramesL,sharkFramesR);
+let shark = PlayerSprite.CreatePlayerSprite(shark_img, shark_frames_L, shark_frames_R, shark_bite_frames_L, shark_bite_frames_R);
 
 // Player - Movement
 controller.moveSprite(shark,200,200);
@@ -16,8 +15,10 @@ effects.bubbles.startScreenEffect(0, 5);
 const area_width = sea_tilemap.width * 16;
 const area_height = sea_tilemap.height * 16;
 
+
 // Interaction
-sprites.onOverlap(SpriteKind.Player, SpriteKind.Food, function(player: Sprite, food: Sprite) {
+sprites.onOverlap(SpriteKind.Player, SpriteKind.Food, function(player: PlayerSprite, food: AnimalSprite) {
+    player.Attack();
     food.destroy();
 })
 
@@ -38,10 +39,7 @@ function ProcessInput(){
 
 function ProcessUpdate(){
     if(food_sprites.length < max_food_sprites){
-        let food = createAnimatedSprite(sharkImg,SpriteKind.Food);
-        food.SetFrames(sharkFramesL, sharkFramesR);
-        food.setPosition(randint(30, area_width-30),randint(30, area_height-30));
-        food_sprites.push(food);
+        AddAnimal();
     }
     for(let food of food_sprites){
         food.UpdateSprite();
@@ -56,4 +54,14 @@ function ProcessRender(){
     }
 
     shark.RenderSprite();
+}
+
+
+
+
+function AddAnimal(){
+    let food = createRandomAnimalSprite();
+    
+    food.setPosition(randint(30, area_width-30),randint(30, area_height-30));
+    food_sprites.push(food);
 }
