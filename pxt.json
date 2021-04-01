@@ -2,8 +2,7 @@
     "name": "template arcade project-name",
     "description": "",
     "dependencies": {
-        "device": "*",
-        "animation": "*"
+        "device": "*"
     },
     "files": [
         "main.ts",
@@ -13,7 +12,9 @@
         "images.ts",
         "tilemap.g.jres",
         "tilemap.g.ts",
-        "templates.ts"
+        "templates.ts",
+        "customCountdown.ts",
+        "settings.ts"
     ],
     "testFiles": [
         "test.ts"

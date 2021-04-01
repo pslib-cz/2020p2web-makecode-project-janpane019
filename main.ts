@@ -1,41 +1,50 @@
- const max_food_sprites = 20;
-let food_sprites:AnimatedSprite[] = [];
-
-// Player - Appearance
+// Player
 let shark = PlayerSprite.CreatePlayerSprite(shark_img, shark_frames_L, shark_frames_R, shark_bite_frames_L, shark_bite_frames_R);
-
-// Player - Movement
-controller.moveSprite(shark,200,200);
+controller.moveSprite(shark,player_horizontal_speed, player_vertical_speed );
 scene.cameraFollowSprite(shark)
 
+// Other animals 
+let food_sprites:AnimalSprite[] = [];
+
 // Scene
-let sea_tilemap =tilemap`Level`;
-tiles.setTilemap(sea_tilemap);
-effects.bubbles.startScreenEffect(0, 5);
+let sea_tilemap = tilemap`Level`;
 const area_width = sea_tilemap.width * 16;
 const area_height = sea_tilemap.height * 16;
 
+tiles.setTilemap(sea_tilemap);
+effects.bubbles.startScreenEffect(0, 5);
+
+// UI 
+info.score();
+
+// Countdown
+let countdown_end = start_time
+createCountdown();
+
+// Music/Audio
+music.setVolume(volume)
 
 // Interaction
 sprites.onOverlap(SpriteKind.Player, SpriteKind.Food, function(player: PlayerSprite, food: AnimalSprite) {
     player.Attack();
+    info.changeScoreBy(1);
+    countdown_end+=time_per_kill;
+    music.pewPew.play()
     food.destroy();
 })
+sprites.onDestroyed(SpriteKind.Food, function(food: AnimalSprite) {
+    const blood_particles = new particles.ParticleSource(food, 20,
+        new particles.RadialFactory(6, 10, 1000, [2]));
+    blood_particles.setAcceleration(0, 0);
 
-sprites.onDestroyed(SpriteKind.Food, function(food: AnimatedSprite) {
     food_sprites.removeElement(food);
 })
 
 // Main game loop 
 game.onUpdate(function() {
-    ProcessInput();
     ProcessUpdate();
     ProcessRender();
 })
-
-function ProcessInput(){
-    
-}
 
 function ProcessUpdate(){
     if(food_sprites.length < max_food_sprites){
@@ -44,8 +53,10 @@ function ProcessUpdate(){
     for(let food of food_sprites){
         food.UpdateSprite();
     }
-
-    shark.UpdateSprite();
+    if(countdown_end - game.runtime()/1000 <= 0)
+    {
+        game.over();
+    }
 }
 
 function ProcessRender(){
@@ -55,9 +66,6 @@ function ProcessRender(){
 
     shark.RenderSprite();
 }
-
-
-
 
 function AddAnimal(){
     let food = createRandomAnimalSprite();

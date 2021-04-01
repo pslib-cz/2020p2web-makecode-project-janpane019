@@ -3,9 +3,6 @@ class AnimatedSprite extends Sprite {
     frames_R: Image[];
     frames_L: Image[];
     is_playing_animation: boolean;
-    UpdateSprite() : void{
-
-    }
 
     RenderSprite() : void{
         if(!this.is_playing_animation)
@@ -26,15 +23,19 @@ class AnimatedSprite extends Sprite {
     PlayAnimation(frames: Image[], frame_interval: number){
         animation.runImageAnimation(this, frames,frame_interval,false);
         this.is_playing_animation = true;
+        // Set to default animation after ending this animation
         setTimeout(function() {
-            this.is_playing_animation = false;
-            if(this.facing_right)
+            if(this.is_playing_animation)
             {
-                animation.runImageAnimation(this, this.frames_R,180,true);
-            }
-            else
-            {
-                animation.runImageAnimation(this, this.frames_L,180,true);
+                this.is_playing_animation = false;
+                if(this.facing_right)
+                {
+                    animation.runImageAnimation(this, this.frames_R,180,true);
+                }
+                else
+                {
+                    animation.runImageAnimation(this, this.frames_L,180,true);
+                }
             }
         }, frames.length*frame_interval)
     }
@@ -62,8 +63,6 @@ class AnimalSprite extends AnimatedSprite {
 
 
     UpdateSprite() : void{
-        super.UpdateSprite();
-        
         // Set random direction
         if(game.runtime() - this.last_direction_change > this.direction_change_interval)
         {
@@ -108,10 +107,6 @@ class AnimalSprite extends AnimatedSprite {
 class PlayerSprite extends AnimatedSprite {
     attack_frames_L : Image[];
     attack_frames_R : Image[];
-
-    UpdateSprite() : void{
-        super.UpdateSprite();
-    }
 
     RenderSprite() : void{
         super.RenderSprite();
