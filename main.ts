@@ -1,10 +1,12 @@
 // Player
 let shark = PlayerSprite.CreatePlayerSprite(shark_img, shark_frames_L, shark_frames_R, shark_bite_frames_L, shark_bite_frames_R);
-controller.moveSprite(shark,player_horizontal_speed, player_vertical_speed );
 scene.cameraFollowSprite(shark)
 
 // Other animals 
 let food_sprites:AnimalSprite[] = [];
+scene.onOverlapTile(SpriteKind.Food,assets.image`sky_fill1`, function(sprite: Sprite, location: tiles.Location) {
+    sprite.vy+=1; // Prevent animals from floating above water
+})
 
 // Scene
 let sea_tilemap = tilemap`Level`;
@@ -42,9 +44,16 @@ sprites.onDestroyed(SpriteKind.Food, function(food: AnimalSprite) {
 
 // Main game loop 
 game.onUpdate(function() {
+    ProcessInput();
     ProcessUpdate();
     ProcessRender();
 })
+
+function ProcessInput()
+{
+    // Custom movement mechanics (some mechanics doesn't work with controller.moveSprite)
+    shark.Move(controller.player1.dx(),controller.player1.dy())
+}
 
 function ProcessUpdate(){
     if(food_sprites.length < max_food_sprites){
@@ -53,9 +62,23 @@ function ProcessUpdate(){
     for(let food of food_sprites){
         food.UpdateSprite();
     }
+    shark.UpdateSprite();
     if(countdown_end - game.runtime()/1000 <= 0)
     {
         game.over();
+    }
+
+    // Apply vertical velocity to shark when he leaves water (collides with sky_fill tile)
+    if((shark.tileKindAt(TileDirection.Top,assets.image`sky_fill`)
+        || shark.tileKindAt(TileDirection.Bottom,assets.image`sky_fill`)) && !shark.apply_gravity )
+    {
+        shark.apply_gravity = true;
+    }
+    else if(!(shark.tileKindAt(TileDirection.Top,assets.image`sky_fill`)
+        || shark.tileKindAt(TileDirection.Bottom,assets.image`sky_fill`)) && shark.apply_gravity)
+    {
+        shark.apply_gravity = false
+        effects.fountain.start(shark,100,120)
     }
 }
 

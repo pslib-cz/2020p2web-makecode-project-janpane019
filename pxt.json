@@ -14,7 +14,9 @@
         "tilemap.g.ts",
         "templates.ts",
         "customCountdown.ts",
-        "settings.ts"
+        "settings.ts",
+        "images.g.jres",
+        "images.g.ts"
     ],
     "testFiles": [
         "test.ts"

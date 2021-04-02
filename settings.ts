@@ -1,7 +1,8 @@
-const start_time = 5
+//const start_time = 5
+const start_time = 100 // For testing
 const volume = 20
-const player_horizontal_speed = 200
-const player_vertical_speed = 200
+const player_horizontal_speed = 100
+const player_vertical_speed = 70
 
 // Time added to countdown for every kill
 const time_per_kill = 0.6

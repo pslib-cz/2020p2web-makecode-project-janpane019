@@ -107,9 +107,26 @@ class AnimalSprite extends AnimatedSprite {
 class PlayerSprite extends AnimatedSprite {
     attack_frames_L : Image[];
     attack_frames_R : Image[];
+    apply_gravity: boolean;
 
     RenderSprite() : void{
         super.RenderSprite();
+    }
+
+    UpdateSprite() : void {
+        if(this.apply_gravity)
+        {
+            this.vy+=10
+        }
+    }
+
+    Move(x: number, y:number)
+    {
+        if(!this.apply_gravity)
+        {
+            this.vy = y*player_vertical_speed;
+        }
+        this.vx = x*player_horizontal_speed;
     }
 
     Attack() : void{
