@@ -4,8 +4,8 @@ scene.cameraFollowSprite(shark)
 
 // Other animals 
 let food_sprites:AnimalSprite[] = [];
-scene.onOverlapTile(SpriteKind.Food,assets.image`sky_fill1`, function(sprite: Sprite, location: tiles.Location) {
-    sprite.vy+=1; // Prevent animals from floating above water
+scene.onOverlapTile(SpriteKind.Food,assets.image`sky_fill1`, function(sprite: AnimalSprite, location: tiles.Location) {
+    if(sprite.can_go_vertically){console.log("fd");sprite.vy+=1}; // Prevent animals from floating above water
 })
 
 // Scene

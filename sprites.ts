@@ -60,7 +60,7 @@ class AnimalSprite extends AnimatedSprite {
     spawn_level : SpawnLevel;
     last_direction_change: number;  // Last time the sprite has changed its direction 
     direction_change_interval: number = 2500;
-
+    can_go_vertically: boolean;
 
     UpdateSprite() : void{
         // Set random direction
@@ -70,7 +70,7 @@ class AnimalSprite extends AnimatedSprite {
             let y_direction = randint(-1, 1);
 
             this.vx = this.horizontal_speed * x_direction; 
-            this.vy = this.vertical_speed * y_direction;
+            this.vy = this.can_go_vertically ? this.vertical_speed * y_direction : 0;
 
             this.last_direction_change = game.runtime();
         }
@@ -80,9 +80,10 @@ class AnimalSprite extends AnimatedSprite {
         super.RenderSprite();
     }
 
-    static CreateAnimalSprite(img: Image, frames_L : Image[], frames_R : Image[], horizontal_speed : number = 15, vertical_speed: number = 10 ): AnimalSprite {
+    static CreateAnimalSprite(img: Image, frames_L : Image[], frames_R : Image[],spawn_level:SpawnLevel,
+     can_go_vertically = true, horizontal_speed : number = 15, vertical_speed: number = 10 ): AnimalSprite {
         const scene = game.currentScene();
-        const sprite = new AnimalSprite(img, frames_L, frames_R,horizontal_speed,vertical_speed);
+        const sprite = new AnimalSprite(img, frames_L, frames_R,spawn_level,can_go_vertically,horizontal_speed,vertical_speed);
         let kind = SpriteKind.Food;
         sprite.setKind(kind);
         scene.physicsEngine.addSprite(sprite);
@@ -94,13 +95,13 @@ class AnimalSprite extends AnimatedSprite {
         return sprite
     }   
 
-    constructor(img: Image, frames_L : Image[], frames_R : Image[],spawn_level : SpawnLevel
-    , horizontal_speed: number = 15, vertical_speed: number = 10){
+    constructor(img: Image, frames_L : Image[], frames_R : Image[],spawn_level : SpawnLevel,
+    can_go_vertically = true, horizontal_speed: number = 15, vertical_speed: number = 10){
         super(img,frames_L,frames_R);
         this.spawn_level = spawn_level;
         this.horizontal_speed = horizontal_speed;
         this.vertical_speed = vertical_speed;
-
+        this.can_go_vertically = can_go_vertically;
         this.last_direction_change = this.direction_change_interval *-1;
     }
 }
@@ -148,7 +149,7 @@ class PlayerSprite extends AnimatedSprite {
             this.is_boosting = true;
             setTimeout(function() {
                 this.is_boosting = false
-            }, 250)
+            }, 500)
             setTimeout(function() {
                 this.can_boost = true;
             }, 3500)
@@ -182,6 +183,6 @@ function createRandomAnimalSprite(): AnimalSprite {
     const scene = game.currentScene();
     let keys = Object.keys(animals_images);
     let animal = animals_images[keys[randint(0,keys.length-1)]];
-    const sprite = AnimalSprite.CreateAnimalSprite(animal.image, animal.frames_L, animal.frames_R,animal.spawn_level);
+    const sprite = AnimalSprite.CreateAnimalSprite(animal.image, animal.frames_L, animal.frames_R,animal.spawn_level,animal.can_go_vertically);
     return sprite;
 } 
