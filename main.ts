@@ -53,6 +53,11 @@ function ProcessInput()
 {
     // Custom movement mechanics (some mechanics doesn't work with controller.moveSprite)
     shark.Move(controller.player1.dx(),controller.player1.dy())
+    if( controller.A.isPressed() && shark.can_boost)
+    {
+        shark.Boost();
+        music.knock.play();
+    }
 }
 
 function ProcessUpdate(){
@@ -92,7 +97,24 @@ function ProcessRender(){
 
 function AddAnimal(){
     let food = createRandomAnimalSprite();
-    
-    food.setPosition(randint(30, area_width-30),randint(30, area_height-30));
+
+    tiles.placeOnRandomTile(food, GetSpawnLevelTile(food.spawn_level))
+    //food.setPosition(randint(30, area_width-30),randint(30, area_height-30));
     food_sprites.push(food);
+}
+
+function GetSpawnLevelTile(spawn_level:SpawnLevel) : Image{
+    switch(spawn_level)
+    {
+        case 0:
+            return assets.tile`sky_fill`
+        case 1:
+            return assets.image`sea_upper_fill`
+        case 2:
+            return assets.image`sea_mid_fill`
+        case 3:
+            return assets.image`sea_bot_fill`
+        default:
+            return assets.image`sea_mid_fill`
+    }
 }

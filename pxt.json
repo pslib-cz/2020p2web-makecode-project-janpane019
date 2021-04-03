@@ -16,7 +16,8 @@
         "customCountdown.ts",
         "settings.ts",
         "images.g.jres",
-        "images.g.ts"
+        "images.g.ts",
+        "enums.ts"
     ],
     "testFiles": [
         "test.ts"

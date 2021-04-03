@@ -57,7 +57,7 @@ class AnimatedSprite extends Sprite {
 class AnimalSprite extends AnimatedSprite {
     horizontal_speed : number;
     vertical_speed : number;
-    
+    spawn_level : SpawnLevel;
     last_direction_change: number;  // Last time the sprite has changed its direction 
     direction_change_interval: number = 2500;
 
@@ -94,9 +94,10 @@ class AnimalSprite extends AnimatedSprite {
         return sprite
     }   
 
-    constructor(img: Image, frames_L : Image[], frames_R : Image[], horizontal_speed: number = 15, vertical_speed: number = 10){
+    constructor(img: Image, frames_L : Image[], frames_R : Image[],spawn_level : SpawnLevel
+    , horizontal_speed: number = 15, vertical_speed: number = 10){
         super(img,frames_L,frames_R);
-
+        this.spawn_level = spawn_level;
         this.horizontal_speed = horizontal_speed;
         this.vertical_speed = vertical_speed;
 
@@ -108,6 +109,8 @@ class PlayerSprite extends AnimatedSprite {
     attack_frames_L : Image[];
     attack_frames_R : Image[];
     apply_gravity: boolean;
+    can_boost: boolean = true;
+    is_boosting: boolean;
 
     RenderSprite() : void{
         super.RenderSprite();
@@ -124,9 +127,9 @@ class PlayerSprite extends AnimatedSprite {
     {
         if(!this.apply_gravity)
         {
-            this.vy = y*player_vertical_speed;
+            this.vy = y*player_vertical_speed * (this.is_boosting?2:1);
         }
-        this.vx = x*player_horizontal_speed;
+        this.vx = x*player_horizontal_speed * (this.is_boosting?2:1);
     }
 
     Attack() : void{
@@ -135,6 +138,20 @@ class PlayerSprite extends AnimatedSprite {
         }
         else{
             this.PlayAnimation(this.attack_frames_L,50);
+        }
+    }
+
+    Boost() : void{
+        if(this.can_boost)
+        {
+            this.can_boost = false;
+            this.is_boosting = true;
+            setTimeout(function() {
+                this.is_boosting = false
+            }, 250)
+            setTimeout(function() {
+                this.can_boost = true;
+            }, 3500)
         }
     }
 
@@ -165,6 +182,6 @@ function createRandomAnimalSprite(): AnimalSprite {
     const scene = game.currentScene();
     let keys = Object.keys(animals_images);
     let animal = animals_images[keys[randint(0,keys.length-1)]];
-    const sprite = AnimalSprite.CreateAnimalSprite(animal.image, animal.frames_L, animal.frames_R);
+    const sprite = AnimalSprite.CreateAnimalSprite(animal.image, animal.frames_L, animal.frames_R,animal.spawn_level);
     return sprite;
 } 

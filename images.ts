@@ -350,8 +350,8 @@ let shark_bite_frames_R = [
     `
 ]
 
-let animals_images: {[name:string] : AnimatedSpriteTemplate} = {
-    fish_1: new AnimatedSpriteTemplate(
+let animals_images: {[name:string] : AnimalSpriteTemplate} = {
+    fish_1: new AnimalSpriteTemplate(
         img`
             . . . . . . . . . . . . . . . .
             . . . . . . . c c c c c c . . .
@@ -517,9 +517,9 @@ let animals_images: {[name:string] : AnimatedSpriteTemplate} = {
                 . . f f f f f f . . . . . . . .
                 . . . . . . . . . . . . . . . .
             `
-        ]
+        ],SpawnLevel.SeaMid
     ),
-    fish_2:  new AnimatedSpriteTemplate(
+    fish_2:  new AnimalSpriteTemplate(
         img`
             . . . . . . . . . . . . . . . .
             . . . . . . . . c c c c . . . .
@@ -685,9 +685,9 @@ let animals_images: {[name:string] : AnimatedSpriteTemplate} = {
                 . . c d d d f f f f . . . . . .
                 . . . c c c . . . . . . . . . .
             `
-        ]
+        ],SpawnLevel.SeaMid
     ),
-    fish_3: new AnimatedSpriteTemplate(img`
+    fish_3: new AnimalSpriteTemplate(img`
         . . 3 . . . . . . . . . . . . 4
         . . 3 . . . . . . . . . . b 4 4
         3 3 3 b b b b b b b 4 3 4 3 4 b
@@ -787,8 +787,9 @@ let animals_images: {[name:string] : AnimatedSpriteTemplate} = {
             . . . . . . . . . . 3 . . . 3 .
             . . . . . . . . . . . . . 3 . .
         `
-    ]),
-    fish_4: new AnimatedSpriteTemplate(
+    ],SpawnLevel.SeaTop
+    ),
+    fish_4: new AnimalSpriteTemplate(
         img`
             . . . . . . . . . . . . . . . d . . . .
             . . . . . . . . . . . . . . d d . . . .
@@ -862,5 +863,6 @@ let animals_images: {[name:string] : AnimatedSpriteTemplate} = {
                 d . . . . . . . . . . . d . . . . . . .
                 . . . . . . . . . . . . . . . . . . . .
             `
-        ])
+        ],SpawnLevel.SeaBot
+        )
 }
