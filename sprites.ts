@@ -76,10 +76,6 @@ class AnimalSprite extends AnimatedSprite {
         }
     }
 
-    RenderSprite() : void{
-        super.RenderSprite();
-    }
-
     static CreateAnimalSprite(img: Image, frames_L : Image[], frames_R : Image[],spawn_level:SpawnLevel,
      can_go_vertically = true, horizontal_speed : number = 15, vertical_speed: number = 10 ): AnimalSprite {
         const scene = game.currentScene();
@@ -113,10 +109,6 @@ class PlayerSprite extends AnimatedSprite {
     can_boost: boolean = true;
     is_boosting: boolean;
 
-    RenderSprite() : void{
-        super.RenderSprite();
-    }
-
     UpdateSprite() : void {
         if(this.apply_gravity)
         {
@@ -124,13 +116,17 @@ class PlayerSprite extends AnimatedSprite {
         }
     }
 
-    Move(x: number, y:number)
-    {
+    Move(x: number, y:number) {
         if(!this.apply_gravity)
         {
             this.vy = y*player_vertical_speed * (this.is_boosting?2:1);
         }
         this.vx = x*player_horizontal_speed * (this.is_boosting?2:1);
+    }
+
+    AddAttackFrames(attack_frames_L : Image[], attack_frames_R : Image[]) : void{
+        this.attack_frames_L = attack_frames_L;
+        this.attack_frames_R = attack_frames_R;
     }
 
     Attack() : void{
@@ -156,9 +152,9 @@ class PlayerSprite extends AnimatedSprite {
         }
     }
 
-    static CreatePlayerSprite(img: Image, frames_L : Image[], frames_R : Image[], attack_frames_L : Image[], attack_frames_R : Image[]): PlayerSprite {
+    static CreatePlayerSprite(img: Image, frames_L : Image[], frames_R : Image[]): PlayerSprite {
         const scene = game.currentScene();
-        const sprite = new PlayerSprite(img, frames_L, frames_R, attack_frames_L, attack_frames_R);
+        const sprite = new PlayerSprite(img, frames_L, frames_R);
         let kind = SpriteKind.Player;
         sprite.setKind(kind);
         scene.physicsEngine.addSprite(sprite);
@@ -170,19 +166,27 @@ class PlayerSprite extends AnimatedSprite {
         return sprite
     }   
 
-    constructor(img: Image, frames_L : Image[], frames_R : Image[], attack_frames_L : Image[], attack_frames_R : Image[]){
+    constructor(img: Image, frames_L : Image[], frames_R : Image[]){
         super(img,frames_L,frames_R);
-        this.attack_frames_L = attack_frames_L;
-        this.attack_frames_R = attack_frames_R;
     }
 }
 
 
 
-function createRandomAnimalSprite(): AnimalSprite {
+function createRandomAnimalSprite(sky = false): AnimalSprite {
     const scene = game.currentScene();
-    let keys = Object.keys(animals_images);
-    let animal = animals_images[keys[randint(0,keys.length-1)]];
+    let keys:string[] = [];
+    let all_keys = Object.keys(GameImageAseets.animals_images); 
+    for (let key of all_keys)
+    {
+        if(sky && GameImageAseets.animals_images[key].spawn_level == SpawnLevel.Sky){
+            keys.push(key);
+        }
+        else if(!sky && GameImageAseets.animals_images[key].spawn_level != SpawnLevel.Sky){
+            keys.push(key);
+        }
+    }
+    let animal = GameImageAseets.animals_images[keys[randint(0,keys.length-1)]];
     const sprite = AnimalSprite.CreateAnimalSprite(animal.image, animal.frames_L, animal.frames_R,animal.spawn_level,animal.can_go_vertically);
     return sprite;
 } 
