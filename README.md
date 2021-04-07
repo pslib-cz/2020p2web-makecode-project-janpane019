@@ -1,5 +1,10 @@
-[![Work in MakeCode](https://classroom.github.com/assets/work-in-make-code-c53f0c86300af1a64cdd5dc830e2509efd17c8cb483a722cacaee84d10eb8ec9.svg)](https://classroom.github.com/online_ide?assignment_repo_id=4438990&assignment_repo_type=AssignmentRepo)
-# Arcade game project - change name 
+
+# Arcade game project - Hungry Shark
+
+### Popis hry
+* Cílem je vydržet co nejdéle naživu. Začínáte s omezeným časem a za každou rybu/ptáka dostanete čas navíc.
+* Ovládání přes Joystick (nebo lépeji WSAD/šipky) a zrychlení pomocí tlačítka A (nejlépeji Mezerník)
+* <a href="https://pslib-cz.github.io/2020p2web-makecode-project-janpane019/">Odkaz na hru</a>
 
 #### Metadata (used for search, rendering)
 
