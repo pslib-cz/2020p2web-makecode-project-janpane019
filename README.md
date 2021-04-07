@@ -4,6 +4,7 @@
 ### Popis hry
 * Cílem je vydržet co nejdéle naživu. Začínáte s omezeným časem a za každou rybu/ptáka dostanete čas navíc.
 * Ovládání přes Joystick (nebo lépeji WSAD/šipky) a zrychlení pomocí tlačítka A (nejlépeji Mezerník)
+* Tip: Boost se nabíjí 3 sekundy. Při dobrém načasování je možné vyskočit z vody výš než normálně.
 * <a href="https://pslib-cz.github.io/2020p2web-makecode-project-janpane019/">Odkaz na hru</a>
 
 #### Metadata (used for search, rendering)
