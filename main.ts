@@ -2,6 +2,10 @@
 let shark = PlayerSprite.CreatePlayerSprite(GameImageAseets.shark_img, GameImageAseets.shark_frames_L, GameImageAseets.shark_frames_R);
 shark.AddAttackFrames(GameImageAseets.shark_bite_frames_L, GameImageAseets.shark_bite_frames_R)
 scene.cameraFollowSprite(shark)
+controller.A.onEvent(ControllerButtonEvent.Pressed, function() {
+    if(shark.can_boost) music.knock.play();
+    shark.Boost();
+})
 
 // Other animals 
 let sea_food_sprites:AnimalSprite[] = [];
@@ -51,13 +55,8 @@ game.onUpdate(function() {
 
 function ProcessInput()
 {
-    // Custom movement mechanics (some mechanics doesn't work with controller.moveSprite)
+    // Custom movement mechanics (some mechanics don't work with controller.moveSprite)
     shark.Move(controller.player1.dx(),controller.player1.dy())
-    if( controller.A.isPressed() && shark.can_boost)
-    {
-        shark.Boost();
-        music.knock.play();
-    }
 }
 
 function ProcessUpdate(){
